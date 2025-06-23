@@ -1,0 +1,9 @@
+name: adara-parser
+channels:
+  - conda-forge
+dependencies:
+  - gxx  # GNU C++ compiler
+  - make
+  - boost-cpp
+  - boost
+  - cmake  # Optional, in case you want to use CMake in the future
