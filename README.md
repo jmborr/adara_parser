@@ -39,3 +39,28 @@ make all
 ```
 
 The executable and object files will be placed in the `_build` directory.
+
+## Automatically activating the environment with direnv
+
+You can use [direnv](https://direnv.net/) to automatically activate the conda environment
+and set up your build path when you enter the project directory
+. Add a file named `.envrc` to your project root with the following contents:
+
+```sh
+#
+# automatically activate conda environment drtsans 
+eval "$(micromamba shell.bash hook)"
+micromamba activate adara-parser
+
+#
+# export environment variables
+export PATH="$PWD/_build:$PATH"
+```
+
+After creating the `.envrc` file, allow it with:
+
+```sh
+direnv allow
+```
+
+This will ensure your environment is ready and the build directory is in your PATH whenever you enter the project folder.
