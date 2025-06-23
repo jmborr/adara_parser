@@ -94,18 +94,22 @@ CPPFLAGS = -Iinclude
 
 LDADD = -lboost_program_options
 
+BUILDDIR = _build
 SRCDIR = src
 INCDIR = include
 SOURCES = $(wildcard $(SRCDIR)/*.cc)
-OBJECTS = $(patsubst $(SRCDIR)/%.cc,%.o,$(SOURCES))
+OBJECTS = $(patsubst $(SRCDIR)/%.cc,$(BUILDDIR)/%.o,$(SOURCES))
 
-all: $(PROG)
+all: $(BUILDDIR) $(BUILDDIR)/$(PROG)
 
-$(PROG): $(OBJECTS)
-	$(CXXLINK) $(OBJECTS) $(LDADD)
+$(BUILDDIR):
+	mkdir -p $(BUILDDIR)
 
-%.o: $(SRCDIR)/%.cc
+$(BUILDDIR)/$(PROG): $(OBJECTS)
+	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDADD)
+
+$(BUILDDIR)/%.o: $(SRCDIR)/%.cc | $(BUILDDIR)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
 
 clean:
-	rm -f $(PROG) *.o
+	rm -rf $(BUILDDIR)
