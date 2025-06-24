@@ -27,7 +27,7 @@ micromamba create -f environment.yml
 3. Activate the environment:
 
 ```sh
-micromamba activate adara-parser-env
+micromamba activate adara-parser
 ```
 
 ## Building the executable
