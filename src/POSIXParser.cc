@@ -28,9 +28,10 @@ bool POSIXParser::read(int fd, std::string & log_info,
 
 	clock_gettime(CLOCK_REALTIME, &start_time);
 
-	unsigned long len, to_read = max_read ?: ~0UL;
+	unsigned long len;
+	unsigned long to_read = max_read ?: ~0UL;  // If max_read is 0, then we read as much as possible.
 	unsigned int max_parse = ~0U;
-	unsigned long to_parse = max_packets ?: max_parse;
+	unsigned long to_parse = max_packets ?: max_parse; // If max_packets is 0, then we parse as many packets as possible.
 	ssize_t rc;
 
 	last_last_parse_elapsed_total = last_parse_elapsed_total;

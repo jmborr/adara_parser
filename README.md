@@ -12,10 +12,20 @@ Build artifacts are placed in the `_build/` directory.
 The software depends on the Boost C++ libraries, particularly `boost_program_options`,
 and is intended to be built in a reproducible environment using Micromamba or Conda.
 
-# adara_parser
-ADARA parser
+## Usage
 
-## Setting up the Micromamba environment
+serving saved raw data stream files:
+
+```bash
+# mimic the ADARA server
+/bin/cat m00000*-f00000*-run-44576.adara | nc -l 127.0.0.1 31414
+# mimic  a client subscription for processing the data stream
+nc 127.0.0.1 31414 | adara-parser --showrun | less
+```
+
+## Development
+
+### Setting up the Micromamba environment
 
 1. Ensure you have [Micromamba](https://mamba.readthedocs.io/en/latest/installation.html#micromamba) installed.
 2. Create the environment:
@@ -30,7 +40,7 @@ micromamba create -f environment.yml
 micromamba activate adara-parser
 ```
 
-## Building the executable
+### Building the executable
 
 Once the environment is activated, build the project with:
 
@@ -40,7 +50,7 @@ make all
 
 The executable and object files will be placed in the `_build` directory.
 
-## Automatically activating the environment with direnv
+### Automatically activating the environment with direnv
 
 You can use [direnv](https://direnv.net/) to automatically activate the conda environment
 and set up your build path when you enter the project directory
