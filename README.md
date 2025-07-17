@@ -14,7 +14,15 @@ and is intended to be built in a reproducible environment using Micromamba or Co
 
 ## Usage
 
-serving saved raw data stream files:
+Inspecting one (or more) ADARA data stream files:
+
+```bash
+$> adara-parser --hex m00000*-f00000*-run-44576.adara | grep "RUN STATUS" | head -n 2
+1117010897.011143026 RUN STATUS (0x4003,v1) [36 bytes]
+1117010900.037361961 RUN STATUS (0x4003,v1) [36 bytes]
+```
+
+Serving saved raw data stream files:
 
 ```bash
 # mimic the ADARA server
