@@ -25,9 +25,9 @@ $> adara-parser --hex m00000*-f00000*-run-44576.adara | grep "RUN STATUS" | head
 Serving saved raw data stream files:
 
 ```bash
-# mimic the ADARA server
+# mimic the ADARA server in Terminal #1
 /bin/cat m00000*-f00000*-run-44576.adara | nc -l 127.0.0.1 31414
-# mimic  a client subscription for processing the data stream
+# mimic  a client subscription for processing the data stream in Terminal #2
 nc 127.0.0.1 31414 | adara-parser --showrun | less
 ```
 Example raw data stream files for run REF_M_44635 (2.4.GB, ~700 “modes”) in
