@@ -22,7 +22,7 @@ $> adara-parser --hex m00000*-f00000*-run-44576.adara | grep "RUN STATUS" | head
 1117010900.037361961 RUN STATUS (0x4003,v1) [36 bytes]
 ```
 
-serving saved raw data stream files:
+Serving saved raw data stream files:
 
 ```bash
 # mimic the ADARA server
