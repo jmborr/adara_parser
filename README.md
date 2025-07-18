@@ -14,6 +14,14 @@ and is intended to be built in a reproducible environment using Micromamba or Co
 
 ## Usage
 
+Inspecting one (or more) ADARA data stream files:
+
+```bash
+$> adara-parser --hex m00000*-f00000*-run-44576.adara | grep "RUN STATUS" | head -n 2
+1117010897.011143026 RUN STATUS (0x4003,v1) [36 bytes]
+1117010900.037361961 RUN STATUS (0x4003,v1) [36 bytes]
+```
+
 serving saved raw data stream files:
 
 ```bash
@@ -22,6 +30,20 @@ serving saved raw data stream files:
 # mimic  a client subscription for processing the data stream
 nc 127.0.0.1 31414 | adara-parser --showrun | less
 ```
+Example raw data stream files for run REF_M_44635 (2.4.GB, ~700 “modes”) in
+`/SNS/REF_M/shared/jbq/REF_M.For.Jose.44635/` containing three folders:
+
+```bash
+20250525-084739.421126841/
+20250525-084817.010925178-run-44635/
+20250525-171230.508522002/
+```
+
+"pre" folder `20250525-084739.421126841/` contains file `m00000001-f00000001.adara`.
+This is the first file of the `m000*` series.  
+"post" folder `20250525-171230.508522002/` contains file `m00000001-f00000001.adara`.
+This is the last file in the series.  
+The bulk of the series are all the files `m000*` inside directory `20250525-084817.010925178-run-44635/`
 
 ## Development
 
