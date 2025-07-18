@@ -126,10 +126,19 @@ $(BUILDDIR)/unit_%.o: tests/unit/%.cc | $(BUILDDIR)
 $(UNIT_TEST_BIN): $(UNIT_TEST_OBJECTS) $(OBJECTS) $(GTEST_LIB)
 	$(CXX) $(CXXFLAGS) -I$(GTEST_INC) $^ -lpthread -o $@
 
+all: $(BUILDDIR) $(BUILDDIR)/$(PROG)
+
+$(BUILDDIR):
+	@mkdir -p $(BUILDDIR)
+
+$(BUILDDIR)/$(PROG): $(OBJECTS)
+	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDADD)
+
+$(BUILDDIR)/%.o: $(SRCDIR)/%.cc | $(BUILDDIR)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
+
 # Run unit tests
 .PHONY: test
-
-all: $(BUILDDIR)/$(PROG)
 
 test: $(UNIT_TEST_BIN)
 	./$(UNIT_TEST_BIN)
