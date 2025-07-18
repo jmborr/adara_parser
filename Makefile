@@ -100,16 +100,48 @@ INCDIR = include
 SOURCES = $(wildcard $(SRCDIR)/*.cc)
 OBJECTS = $(patsubst $(SRCDIR)/%.cc,$(BUILDDIR)/%.o,$(SOURCES))
 
+# Google Test setup
+GTEST_DIR = $(BUILDDIR)/googletest
+GTEST_REPO = https://github.com/google/googletest.git
+GTEST_LIB = $(GTEST_DIR)/build/lib/libgtest.a
+GTEST_INC = $(GTEST_DIR)/googletest/include
+
+# Test sources
+UNIT_TEST_SOURCES = $(wildcard tests/unit/*.cc)
+UNIT_TEST_OBJECTS = $(patsubst tests/unit/%.cc,$(BUILDDIR)/unit_%.o,$(UNIT_TEST_SOURCES))
+UNIT_TEST_BIN = $(BUILDDIR)/unit_tests
+
+# Download and build Google Test if not present
+$(GTEST_LIB):
+	@if [ ! -d $(GTEST_DIR) ]; then \
+	  git clone --depth 1 $(GTEST_REPO) $(GTEST_DIR); \
+	fi
+	cd $(GTEST_DIR) && cmake -S googletest -B build && cmake --build build --target gtest
+
+# Build unit test objects
+$(BUILDDIR)/unit_%.o: tests/unit/%.cc | $(BUILDDIR)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I$(GTEST_INC) -c $< -o $@
+
+# Build unit test binary
+$(UNIT_TEST_BIN): $(UNIT_TEST_OBJECTS) $(OBJECTS) $(GTEST_LIB)
+	$(CXX) $(CXXFLAGS) -I$(GTEST_INC) $^ -lpthread -o $@
+
 all: $(BUILDDIR) $(BUILDDIR)/$(PROG)
 
 $(BUILDDIR):
-	mkdir -p $(BUILDDIR)
+	@mkdir -p $(BUILDDIR)
 
 $(BUILDDIR)/$(PROG): $(OBJECTS)
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDADD)
 
 $(BUILDDIR)/%.o: $(SRCDIR)/%.cc | $(BUILDDIR)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
+
+# Run unit tests
+.PHONY: test
+
+test: $(UNIT_TEST_BIN)
+	./$(UNIT_TEST_BIN)
 
 clean:
 	rm -rf $(BUILDDIR)

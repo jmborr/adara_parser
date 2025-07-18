@@ -30,6 +30,20 @@ Serving saved raw data stream files:
 # mimic  a client subscription for processing the data stream
 nc 127.0.0.1 31414 | adara-parser --showrun | less
 ```
+Example raw data stream files for run REF_M_44635 (2.4.GB, ~700 “modes”) in
+`/SNS/REF_M/shared/jbq/REF_M.For.Jose.44635/` containing three folders:
+
+```bash
+20250525-084739.421126841/
+20250525-084817.010925178-run-44635/
+20250525-171230.508522002/
+```
+
+"pre" folder `20250525-084739.421126841/` contains file `m00000001-f00000001.adara`.
+This is the first file of the `m000*` series.  
+"post" folder `20250525-171230.508522002/` contains file `m00000001-f00000001.adara`.
+This is the last file in the series.  
+The bulk of the series are all the files `m000*` inside directory `20250525-084817.010925178-run-44635/`
 
 ## Development
 
