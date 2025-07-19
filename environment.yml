@@ -8,3 +8,4 @@ dependencies:
   - boost
   - cmake  # Optional, in case you want to use CMake in the future
   - git  # Needed to clone Google Test for unit testing
+  - pytest
