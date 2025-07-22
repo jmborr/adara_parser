@@ -80,9 +80,10 @@ def main():
         hex_bytes.extend(words)
 
     n = len(hex_bytes)
-    step =1 if words_per_line is None else 1
+    if words_per_line is None or words_per_line == 0:
+        words_per_line = 16  # fallback to 16 bytes per line
     print(f"const unsigned char packet[{n}] = {{")
-    for i in range(0, n, step):
+    for i in range(0, n, words_per_line):
         line = '  ' + ', '.join(f"0x{w.lower()}" for w in hex_bytes[i:i+words_per_line])
         if i + words_per_line < n:
             line += ","
