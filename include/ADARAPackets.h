@@ -103,6 +103,24 @@ public:
   const uint8_t *packet() const { return m_data; }
   const uint8_t *payload() const { return m_data + header_length(); }
 
+  // ADARA Munge "Packet Editing" Methods... ;-b
+
+  // Edit/Change the PulseId (or Packet "Timestamp")...
+  void setPulseId(uint64_t pulseId) {
+    uint32_t *field = (uint32_t *) m_data;
+    field[2] = pulseId >> 32;
+    field[3] = pulseId;
+  }
+
+  // Edit/Change the Packet Type Version...
+  // (Yes, Believe It or Not, We Need This Capability... ;-b)
+  void remapVersion( PacketType::Version version ) {
+    m_version = version;
+    m_type = ADARA_PKT_TYPE( m_base_type, m_version );
+    uint32_t *field = (uint32_t *) m_data;
+    field[1] = m_type;
+  }
+
 protected:
   const uint8_t *m_data;
   uint32_t m_len;
@@ -126,6 +144,14 @@ public:
   uint32_t maxPulseSeq() const { return (0x7fff + 1); }
   uint32_t sourceSeq() const { return m_fields[1] & 0xffff; }
   uint32_t maxSourceSeq() const { return (0xffff + 1); }
+
+  bool gotDataFlags(void) const { return m_version >= 0x01; }
+  uint32_t dataFlags(void) const {
+    if ( gotDataFlags() )
+      return (m_fields[2] >> 27) & 0x1f;
+    else return 0;
+  }
+
   PulseFlavor::Enum flavor() const { return static_cast<PulseFlavor::Enum>((m_fields[2] >> 24) & 0x7); }
   uint32_t pulseCharge() const { return m_fields[2] & 0x00ffffff; }
   bool badVeto() const { return !!(m_fields[3] & 0x80000000); }
@@ -383,6 +409,35 @@ public:
   uint32_t runStart() const { return m_fields[1]; }
   uint32_t fileNumber() const { return m_fields[2] & 0xffffff; }
   RunStatus::Enum status() const { return static_cast<RunStatus::Enum>(m_fields[2] >> 24); }
+  void setRunStart(uint32_t runStart) {
+    uint32_t *field = (uint32_t *) m_fields;
+    field[1] = runStart;
+  }
+
+  uint32_t pauseFileNumber(void) const {
+    if ( m_version >= 0x01 ) {
+      return m_fields[3] & 0xffffff;
+    }
+    else return( 0 );
+  }
+  uint32_t paused(void) const {
+    if ( m_version >= 0x01 ) {
+      return m_fields[3] >> 24;
+    }
+    else return( 0 );
+  }
+  uint32_t addendumFileNumber(void) const {
+    if ( m_version >= 0x01 ) {
+      return m_fields[4] & 0xffffff;
+    }
+    else return( 0 );
+  }
+  uint32_t addendum(void) const {
+    if ( m_version >= 0x01 ) {
+      return m_fields[4] >> 24;
+    }
+    else return( 0 );
+  }
 
 private:
   const uint32_t *m_fields;
