@@ -95,7 +95,7 @@ void Parser::reset() {
   m_len = 0;
   m_oversize_len = 0;
   m_restart_offset = 0;
-
+  m_oversize_offset = 0;
   m_discarded_packets.clear();
 }
 

@@ -38,6 +38,7 @@
 
 #pragma once
 
+#include <cstdint>
 #include <stdexcept>
 #include <string>
 
@@ -234,7 +235,7 @@ struct Header {
 
 class invalid_packet : public std::runtime_error {
 public:
-  explicit invalid_packet(const std::string &msg) : runtime_error(msg) {}
+  explicit invalid_packet(const std::string &msg) : std::runtime_error(msg) {}
 };
 
 enum { EPICS_EPOCH_OFFSET = 631152000 };

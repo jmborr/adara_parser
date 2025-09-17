@@ -52,8 +52,8 @@ namespace ADARA {
 class  PacketHeader {
 public:
   PacketHeader(const uint8_t *data) {
-    const uint32_t *field = reinterpret_cast<const uint32_t *>(data);
-
+    uint32_t field[4];
+    std::memcpy(field, data, sizeof(field));  // avoid alignment issues
     m_payload_len = field[0];
     m_type = field[1];
     m_base_type = (PacketType::Type)ADARA_BASE_PKT_TYPE(m_type);
@@ -511,6 +511,7 @@ public:
   uint32_t scanIndex() const { return m_fields[1]; }
   const std::string &comment() const {
     if (!m_comment.length() && (m_fields[0] & 0xffff)) {
+      // Copy (m_fields[0] & 0xffff) bytes starting from raw memory at &m_fields[2] into string m_comment
       m_comment.assign(reinterpret_cast<const char *>(&(m_fields[2])), m_fields[0] & 0xffff);
     }
 
@@ -1017,6 +1018,7 @@ public:
     fields[0] = dev;
   };
 
+  // TODO: signature of this function is wrong. Either (double value, int index) or (vector<double> values)
   void updateValue(double value) {
     uint32_t *fields = reinterpret_cast<uint32_t *>(const_cast<uint8_t *>(payload()));
     std::memcpy(&fields[3], &value, sizeof(double));
